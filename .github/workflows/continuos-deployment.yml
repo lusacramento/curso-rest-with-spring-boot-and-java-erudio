@@ -60,10 +60,7 @@ jobs:
         run: docker compose build
 
       - name: Push to Docker Hub Container Registry
-        run: PORT_TEST
-PORT_TEST|
+        run: |
           docker tag ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.run_id }}
-          PORT_TEST
-PORT_TEST
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.run_id }}
