@@ -25,9 +25,32 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Create Env File
+        working-directory: ./DOCKER/
+        run: |
+          echo "MYSQL_URI=${{ vars.MYSQL_URI }}" >> .env
+          echo "MYSQL_DATABASE=${{ vars.MYSQL_DATABASE }}" >> .env
+          echo "MYSQL_VOLUME_DIR=${{ vars.MYSQL_VOLUME_DIR }}" >> .env
+          echo "MYSQL_MAIL_PORT=${{ vars.MYSQL_MAIL_PORT }}" >> .env
+          echo "EMAIL_SUBJECT=${{ vars.EMAIL_SUBJECT }}" >> .env
+          echo "EMAIL_MESSAGE=${{ vars.EMAIL_MESSAGE }}" >> .env
+          echo "IS_TLS_ENABLED=${{ vars.IS_TLS_ENABLED }}" >> .env
+          echo "UPLOAD_DIR=${{ vars.UPLOAD_DIR }}" >> .env
+          echo "PORT_TEST=${{ vars.PORT_TEST }}" >> .env
+          echo "EXPIRE_LENGHT=${{ vars.EXPIRE_LENGHT }}" >> .env
+          echo "TZ=${{ vars.TZ }}" >> .env
+          echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
+          echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+          echo "MYSQL_USER=${{ secrets.MYSQL_USER }}" >> .env
+          echo "MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}" >> .env
+          echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> .env
+          echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" >> .env
+          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> .env
+
+
       - name: Build Application .jar
         working-directory: ./DOCKER/rest-with-spring-boot-and-java-erudio/
-        # Criamos um .env vazio para o Maven inicializar sem quebrar e pulamos os testes
         run: |
           touch .env
           mvn clean package -DskipTests
@@ -37,8 +60,10 @@ jobs:
         run: docker compose build
 
       - name: Push to Docker Hub Container Registry
-        run: |
+        run: PORT_TEST
+PORT_TEST|
           docker tag ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.run_id }}
-          
+          PORT_TEST
+PORT_TEST
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPOSITORY }}:${{ github.run_id }}
