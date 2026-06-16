@@ -39,7 +39,8 @@ replay_pid*
 target/
 
 
-#IntelliJ files
+#IntelliJ files[ERROR]   BookControllerV1CorsTest.findAll:187 expected: <2011-12-09 00:00:00> but was: <1992-01-27 00:00:00>
+
 **/*.iml
 **/.idea
 **/.gradle
@@ -50,4 +51,5 @@ target/
 #Other Files
 *.ini
 
-
+# Docker
+data_db/
