@@ -1,0 +1,90 @@
+package br.com.erudio.controllers;
+
+import br.com.erudio.controllers.docs.AuthControllerDocs;
+import br.com.erudio.data.dto.security.AccountCredentialsDTO;
+import br.com.erudio.data.dto.security.TokenDTO;
+import br.com.erudio.data.dto.v1.PersonDTOV1;
+import br.com.erudio.services.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+
+@Tag(name = "Authentication Endpoint")
+@RestController
+@RequestMapping("/auth")
+public class AuthController implements AuthControllerDocs {
+
+    @Autowired
+    AuthService service;
+
+    @PostMapping(
+            value = "/createUser",
+            consumes = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE
+            },
+            produces = {
+                    MediaType.APPLICATION_JSON_VALUE,
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_YAML_VALUE
+            }
+    )
+    @Override
+    public AccountCredentialsDTO create(@RequestBody AccountCredentialsDTO credentials) {
+        return service.create(credentials);
+    }
+
+    @PostMapping("/signin")
+    @Override
+    public ResponseEntity<?> signin(@RequestBody AccountCredentialsDTO credentials){
+
+        if(credentialsIsInvalid(credentials))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(getErrorMessage());
+
+        var token = service.signIn(credentials).getBody();
+
+        if(token == null)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(getErrorMessage());;
+
+        return ResponseEntity.ok().body(token);
+    }
+
+    @PutMapping("/refresh/{username}")
+    @Override
+    public ResponseEntity<?> refreshToken(
+            @PathVariable("username") String username,
+            @RequestHeader("Authorization") String refreshToken
+    ) throws Exception {
+
+        if(parametersAreInvalid(username, refreshToken))
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(getErrorMessage());
+
+        var token = service.refreshToken(username, refreshToken).getBody();
+
+        if(token == null)
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(getErrorMessage());;
+
+        return ResponseEntity.ok().body(token);
+    }
+
+    private boolean parametersAreInvalid(String username, String refreshToken) {
+        return StringUtils.isBlank(username) || StringUtils.isBlank(refreshToken);
+    }
+
+    private static boolean credentialsIsInvalid(AccountCredentialsDTO credentials) {
+        return credentials == null || StringUtils.isBlank(credentials.getUsername()) || StringUtils.isBlank(credentials.getPassword());
+    }
+
+    private static String getErrorMessage(){
+        return "Invalid client request!";
+    }
+}

@@ -1,0 +1,57 @@
+server:
+  port: 8888
+
+cors:
+  originPatterns: http://localhost:8080,http://localhost:3000
+
+file:
+  upload-dir: ${java.io.tmpdir}/UploadDir
+
+security:
+  jwt:
+    token:
+      secret-key: 95rh97
+      expire-lenght: 3600000
+
+email:
+  subject: Default Subject
+  message: Default Message
+
+spring:
+  application:
+    name: rest-with-spring-boot-and-java-erudio
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    open-in-view: false
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  main:
+    allow-bean-definition-overriding: true
+
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+logging:
+  level:
+    root: INFO
+    br.com.erudio: WARN
+
+springdoc:
+  paths-to-match: /api/**
+  swagger-ui:
+    use-root-path: true

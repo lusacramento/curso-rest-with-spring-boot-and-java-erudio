@@ -1,0 +1,76 @@
+server:
+  port: 8080
+
+dotenv:
+  location=$./.env
+cors:
+  originPatterns: http://localhost:8080,http://localhost:3000
+file:
+  upload-dir: ${/home/lusacramento/web/uploads}
+
+security:
+  jwt:
+    token:
+      secret-key: ${SECRET_KEY}
+      expire-lenght: ${EXPIRE_LENGHT}
+
+email:
+  subject: ${EMAIL_SUBJECT}
+  message: ${EMAIL_MESSAGE}
+
+spring:
+  application:
+    name: rest-with-spring-boot-and-java-erudio
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${MYSQL_URI}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+  jpa:
+    hibernate:
+        ddl-auto: none
+    show-sql: false
+
+    open-in-view: false
+
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  servlet:
+    multipart:
+      enabled: true
+      file-size-threshold: 2KB
+      max-file-size: 200MB
+      max-request-size: 215MB
+
+logging:
+  level:
+    root: WARN
+    br.com.erudio: DEBUG
+#    orgspringframework.security: DEBUG
+#    org.testcontainers: WARN
+#    net.sf.jasperreports.engine.*: TRACE
+
+springdoc:
+  paths-to-match:
+    - /api/**
+    - /auth/**
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: alpha
+    tags-sorter: alpha
+  api-docs:
+    path: /v3/api-docs

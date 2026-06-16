@@ -1,0 +1,57 @@
+services:
+  db:
+    image: mysql:9.1.0
+    restart: always
+    environment:
+      TZ: ${TZ}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - ${MYSQL_PORT}:3306
+    expose:
+      - 3306
+    volumes:
+      - ./data_db:${MYSQL_VOLUME_DIR}
+    networks:
+      - erudio-network
+  
+  rest-with-spring-boot-erudio:
+    image: lusacramento/rest-with-spring-boot-erudio:latest
+
+    restart: always
+    build: ./rest-with-spring-boot-and-java-erudio
+    working_dir: /rest-with-spring-boot-and-java-erudio
+    environment:
+      TZ: ${TZ}
+      SERVER_PORT: 80
+      SPRING_PROFILES_ACTIVE: docker
+      MYSQL_URI: jdbc:mysql://db:3306/${MYSQL_DATABASE}?useTimezone=true&serverTimezone=UTC
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      EMAIL_SUBJECT: ${EMAIL_SUBJECT}
+      EMAIL_MESSAGE: ${EMAIL_MESSAGE}
+      IS_TLS_ENABLED: ${IS_TLS_ENABLED}
+      UPLOAD_DIR: ${UPLOAD_DIR}
+      PORT_TEST: ${PORT_TEST}
+      SECRET_KEY: ${SECRET_KEY}
+      EXPIRE_LENGHT: ${EXPIRE_LENGHT}
+    volumes:
+      - ./my_local_uploads:${UPLOAD_DIR}
+      
+    command: mvn spring-boot:run
+    ports:
+      - 80:80
+    depends_on:
+      - db
+    networks:
+      - erudio-network
+    
+networks:
+  erudio-network:
+    driver: bridge

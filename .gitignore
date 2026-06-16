@@ -8,7 +8,7 @@
 *.ctxt
 
 # Mobile Tools for Java (J2ME)
-.mtj.tmp/
+.mtj.tmp/git@github.com:lusacramento/curso-rest-with-spring-boot-and-java-erudio.git
 
 # Package Files #
 *.jar
@@ -22,3 +22,32 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+/.metadata/
+
+# SSH Keys
+*.pem
+*.ppk
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+
+# Merge Files
+*.bak
+
+#Gradle temporary files
+target/
+
+
+#IntelliJ files
+**/*.iml
+**/.idea
+**/.gradle
+
+# enviroment var
+.env
+
+#Other Files
+*.ini
+
+
